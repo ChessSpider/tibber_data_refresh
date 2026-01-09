@@ -14,5 +14,12 @@
       "already_configured": "All Tibber accounts are already configured.",
       "tibber_entry_missing": "The selected Tibber configuration no longer exists."
     }
+  },
+  "entity": {
+    "sensor": {
+      "electricity_price": {
+        "name": "Electricity price"
+      }
+    }
   }
 }

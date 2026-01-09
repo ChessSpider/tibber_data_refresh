@@ -14,5 +14,12 @@
                 "title": "Select Tibber account"
             }
         }
+    },
+  "entity": {
+    "sensor": {
+      "electricity_price": {
+        "name": "Electricity price"
+      }
     }
+  }
 }
