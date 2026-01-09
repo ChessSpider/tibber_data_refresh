@@ -1,0 +1,62 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+ha-venv/
+
+# --- Home Assistant runtime ---
+.storage/
+deps/
+tts/
+log/
+home-assistant.log*
+OZW_Log.txt
+
+# --- HA dev / local config ---
+secrets.yaml
+known_devices.yaml
+configuration.yaml
+automations.yaml
+scripts.yaml
+scenes.yaml
+blueprints/
+custom_components/*/__pycache__/
+
+# --- VS Code / Devcontainers ---
+.vscode/
+.devcontainer/
+*.code-workspace
+
+# --- OS / editor noise ---
+.DS_Store
+Thumbs.db
+.idea/
+
+# --- Git ---
+*.orig
+*.rej
+
+# --- Build / dist ---
+dist/
+build/
+
+# --- HACS / release helpers ---
+hacs.json.bak
+
+# --- Tests / tooling ---
+.tox/
+.cache/
