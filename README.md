@@ -1,152 +1,125 @@
 # Tibber Data Refresh
 
-A Home Assistant custom integration that exposes **detailed Tibber electricity price data**
-(current price, today/tomorrow price series, and derived attributes) while reusing the
-**official Tibber integration and pyTibber**.
+A Home Assistant custom integration that exposes **Tibber energy prices** in a clean, structured format, optimized for automations, dashboards, and price-aware scheduling.
 
-This integration exists to provide **stable, script- and automation-friendly price data**
-that was previously available via the deprecated `tibber-data` integration.
+This integration reuses the **official Tibber integration** and does **not** create a separate Tibber connection.
 
 ---
 
 ## Features
 
-For each active Tibber home:
+- One **energy price sensor per Tibber home**
+- Uses data provided by the official Tibber integration (`pyTibber`)
+- Supports **hourly and 15-minute pricing** (including NL quarter-hour prices)
+- Exposes **raw time-series price data** with timestamps
+- Lightweight, polling-only (no realtime subscriptions)
+- Fully compatible with popular price visualisation cards
 
-- Current electricity price
-- Today’s hourly prices
-- Tomorrow’s hourly prices (when available)
-- Raw price data with timestamps
-- Derived attributes:
-  - minimum / maximum price today
-  - average price today
-  - cheapest hour today
-  - intraday price rank
+---
 
-The integration **does not duplicate authentication** and relies entirely on the
-existing Tibber config entry.
+## Price sensor format
+
+The integration creates a sensor with:
+
+- **State**: current electricity price
+- **Unit**: `<currency>/kWh`
+- **Attributes** containing a full price timeline
+
+### Attributes
+
+```yaml
+attributes:
+  data:
+    - start_time: "2026-01-09T00:00:00+01:00"
+      price_per_kwh: 0.238
+    - start_time: "2026-01-09T00:15:00+01:00"
+      price_per_kwh: 0.236
+  currency: "EUR"
+  interval_minutes: 15
+```
+
+### Attribute details
+
+| Attribute | Description |
+|---------|------------|
+| `data` | List of price intervals |
+| `start_time` | ISO-8601 timestamp (timezone aware) |
+| `price_per_kwh` | Electricity price in currency/kWh |
+| `currency` | Currency (e.g. `EUR`, `NOK`) |
+| `interval_minutes` | Length of each interval (15 or 60) |
+
+---
+
+## Compatibility
+
+### ha-price-timeline-card ✅
+
+This integration is **fully compatible** with  
+**ha-price-timeline-card** by Neisi.
+
+No templates, helpers, or adapters are required.
+
+Example Lovelace usage:
+
+```yaml
+type: custom:price-timeline-card
+entity: sensor.<your_home>_energy_price
+```
+
+The card directly consumes:
+
+- `attributes.data`
+- `start_time`
+- `price_per_kwh`
+- `currency`
+- `interval_minutes`
+
+as exposed by this integration.
 
 ---
 
 ## Requirements
 
-- Home Assistant Core **2026.1 or newer**
-- The official **Tibber** integration must already be configured and working
-- An active Tibber subscription with price data available
+- Home Assistant Core
+- Official **Tibber** integration configured and authenticated
+- At least one active Tibber subscription
 
 ---
 
 ## Installation (HACS)
 
-### 1. Add custom repository
-
 1. Open **HACS**
 2. Go to **Integrations**
-3. Open the menu (top right) → **Custom repositories**
-4. Add:
-   - **Repository**:  
-     `https://github.com/chessspider/tibber_data_refresh`
-   - **Category**:  
-     `Integration`
-5. Click **Add**
+3. Click **Custom repositories**
+4. Add this repository:
+
+```text
+https://github.com/chessspider/tibber_data_refresh
+```
+
+Category: **Integration**
+
+5. Install **Tibber Data Refresh**
+6. Restart Home Assistant
+7. Add the integration via **Settings → Devices & Services**
 
 ---
 
-### 2. Install the integration
+## Configuration
 
-1. In HACS → **Integrations**
-2. Search for **Tibber Data Refresh**
-3. Click **Install**
-4. Restart Home Assistant
+During setup, you select which existing **Tibber account** to use.  
+No additional credentials are required.
 
 ---
 
-### 3. Configure
+## Notes
 
-1. Go to **Settings → Devices & Services**
-2. Click **Add integration**
-3. Search for **Tibber Data Refresh**
-4. Select the **existing Tibber account** you want to use
-
-That’s it. No credentials or tokens are required.
-
----
-
-## Entities
-
-### Sensor: Electricity price
-
-**Entity ID example**
-``` 
-sensor.<home_name>_electricity_price
-``` 
-
-**State**
-- Current electricity price (currency / kWh)
-
-**Attributes**
-``` 
-today: [0.23, 0.22, 0.21, ...]
-raw_today:
-  - time: "2026-01-09T13:00:00+01:00"
-    total: 0.21
-tomorrow: [...]
-raw_tomorrow: [...]
-tomorrow_valid: true
-price_rank: 0.42
-min_today: 0.19
-max_today: 0.27
-avg_today: 0.231
-cheapest_today:
-  time: "2026-01-09T03:00:00+01:00"
-  total: 0.19
-``` 
-
-All timestamps are **timezone-aware** and aligned with Tibber’s data.
-
----
-
-## Design notes
-
-- Uses the **official Tibber integration runtime**
-- No additional polling beyond Tibber updates
-- One sensor per Tibber home
-- No grid price separation (total price is exposed directly)
-- Written to be simple, explicit, and automation-friendly
-
----
-
-## Troubleshooting
-
-**Integration does not show up**
-- Ensure Home Assistant is restarted after installation
-- Ensure the Tibber integration is already configured
-
-**No price data**
-- Verify the Tibber app shows current prices
-- Tomorrow prices are only available later in the day (region-dependent)
-
----
-
-## Development
-
-For local development, you can symlink the integration into:
-
-``` 
-config/custom_components/tibber_data_refresh
-``` 
-
-Restart Home Assistant after changes.
+- Grid price vs energy price is intentionally **not split**
+- The exposed price represents the **total electricity price per kWh**
+- Designed for **automation and visualisation**, not billing accuracy
 
 ---
 
 ## License
 
 MIT
-
----
-
-## Disclaimer
-
-This project is **not affiliated with Tibber**.
-Tibber is a registered trademark of Tibber AS.

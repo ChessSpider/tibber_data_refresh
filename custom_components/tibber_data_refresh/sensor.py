@@ -71,21 +71,13 @@ class TibberEnergyPriceSensor(SensorEntity):
         )
 
     async def async_update(self) -> None:
-        """Fetch and update the current electricity price and attributes.
-
-        Price data is derived from the Tibber home price snapshot and includes
-        both the current price and structured price details for today and
-        tomorrow.
-        """
         snapshot = build_energy_price_snapshot(self._home)
 
         self._attr_native_value = snapshot["current"]
         self._attr_extra_state_attributes = {
-            "today": snapshot["today"],
-            "raw_today": snapshot["raw_today"],
-            "tomorrow": snapshot["tomorrow"],
-            "raw_tomorrow": snapshot["raw_tomorrow"],
-            "tomorrow_valid": snapshot["tomorrow_valid"],
+            "data": snapshot["data"],
+            "currency": snapshot["currency"],
+            "interval_minutes": snapshot["interval_minutes"],
             "price_rank": snapshot["price_rank"],
         }
         self._attr_available = snapshot["current"] is not None
