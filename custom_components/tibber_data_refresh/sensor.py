@@ -60,6 +60,7 @@ class TibberEnergyPriceSensor(SensorEntity):
         """
         self._home = home
 
+        self._attr_name = "Energy price"
         self._attr_unique_id = f"{home.home_id}_energy_price"
         self._attr_native_unit_of_measurement = home.price_unit
 
