@@ -1,0 +1,10 @@
+{
+  "domain": "tibber_data_refresh",
+  "name": "Tibber Data Refresh",
+  "config_flow": true,
+  "dependencies": ["tibber"],
+  "after_dependencies": ["tibber"],
+  "iot_class": "cloud_polling",
+  "codeowners": ["@chessspider"],
+  "version": "1.0.0"
+}

@@ -1,0 +1,18 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "All Tibber accounts are already configured.",
+            "tibber_entry_missing": "The selected Tibber configuration no longer exists.",
+            "tibber_not_configured": "The Tibber integration must be set up first."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "tibber_entry_id": "Tibber account"
+                },
+                "description": "Select which existing Tibber configuration this integration should use.",
+                "title": "Select Tibber account"
+            }
+        }
+    }
+}

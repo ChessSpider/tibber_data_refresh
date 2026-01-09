@@ -1,0 +1,7 @@
+{
+  "name": "Tibber Data Refresh",
+  "domain": "tibber_data_refresh",
+  "homeassistant": "2026.1.0",
+  "iot_class": "cloud_polling",
+  "integration_type": "integration"
+}
