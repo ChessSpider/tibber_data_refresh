@@ -50,7 +50,6 @@ class TibberEnergyPriceSensor(SensorEntity):
     """
 
     _attr_has_entity_name = True
-    _attr_name = None
     _attr_translation_key = "electricity_price"
 
     def __init__(self, home: TibberHome) -> None:
