@@ -11,6 +11,7 @@ from tibber import Tibber
 from tibber.home import TibberHome
 
 from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.tibber import TibberRuntimeData
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -28,8 +29,8 @@ async def async_setup_entry(
 
     One sensor is created per active Tibber home with an active subscription.
     """
-    runtime_data = hass.data[DOMAIN][entry.entry_id]
-    tibber_connection: Tibber = runtime_data.tibber_connection
+    runtime_data: TibberRuntimeData = hass.data[DOMAIN][entry.entry_id]
+    tibber_connection: Tibber = runtime_data._client
 
     entities: list[TibberEnergyPriceSensor] = []
 
