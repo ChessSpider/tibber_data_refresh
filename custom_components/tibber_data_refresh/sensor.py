@@ -17,6 +17,7 @@ from homeassistant.components.tibber import TibberRuntimeData
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .price_helpers import build_energy_price_snapshot
@@ -27,7 +28,7 @@ SCAN_INTERVAL = timedelta(hours=1)
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
-    async_add_entities,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up electricity price sensors for a Tibber config entry.
 
@@ -43,7 +44,7 @@ async def async_setup_entry(
             continue
         entities.append(TibberEnergyPriceSensor(home))
 
-    async_add_entities(entities)
+    async_add_entities(entities, update_before_add=True)
 
 
 class TibberEnergyPriceSensor(SensorEntity):
