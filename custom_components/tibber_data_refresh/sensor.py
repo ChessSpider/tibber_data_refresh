@@ -7,6 +7,8 @@ today and tomorrow derived from Tibber price data.
 
 from __future__ import annotations
 
+from datetime import timedelta
+
 from tibber import Tibber
 from tibber.home import TibberHome
 
@@ -18,6 +20,8 @@ from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN
 from .price_helpers import build_energy_price_snapshot
+
+SCAN_INTERVAL = timedelta(hours=1)
 
 
 async def async_setup_entry(
@@ -72,8 +76,11 @@ class TibberEnergyPriceSensor(SensorEntity):
         )
 
     async def async_update(self) -> None:
-        snapshot = build_energy_price_snapshot(self._home)
+        """Zorg dat price_total up-to-date is."""
 
+        await self._home.update_info_and_price_info()
+
+        snapshot = build_energy_price_snapshot(self._home)
         self._attr_native_value = snapshot["current"]
         self._attr_extra_state_attributes = {
             "data": snapshot["data"],
