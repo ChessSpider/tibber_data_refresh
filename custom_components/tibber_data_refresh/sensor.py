@@ -35,7 +35,7 @@ async def async_setup_entry(
     One sensor is created per active Tibber home with an active subscription.
     """
     runtime_data: TibberRuntimeData = hass.data[DOMAIN][entry.entry_id]
-    tibber_connection: Tibber = runtime_data._client
+    tibber_connection: Tibber = runtime_data.async_get_client(hass)
 
     entities: list[TibberEnergyPriceSensor] = []
 
