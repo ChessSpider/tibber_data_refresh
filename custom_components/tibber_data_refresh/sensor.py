@@ -35,7 +35,7 @@ async def async_setup_entry(
     One sensor is created per active Tibber home with an active subscription.
     """
     runtime_data: TibberRuntimeData = hass.data[DOMAIN][entry.entry_id]
-    tibber_connection: Tibber = runtime_data.async_get_client(hass)
+    tibber_connection: Tibber = await runtime_data.async_get_client(hass)
 
     entities: list[TibberEnergyPriceSensor] = []
 
@@ -81,9 +81,11 @@ class TibberEnergyPriceSensor(SensorEntity):
     async def async_update(self) -> None:
         """Zorg dat price_total up-to-date is."""
 
-        self._runtime_data.async_get_client(
-            self.hass
-        )  # dumb code to refresh access token if needed before updating price info
+        # dumb code to refresh access token if needed before updating price info
+        tibber_connection: Tibber = await self._runtime_data.async_get_client(self.hass)
+        self._home = tibber_connection.get_home(self._home.home_id)
+        # stop dumb code here
+
         await self._home.update_info_and_price_info()
 
         snapshot = build_energy_price_snapshot(self._home)
