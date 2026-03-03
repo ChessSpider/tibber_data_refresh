@@ -42,7 +42,7 @@ async def async_setup_entry(
     for home in tibber_connection.get_homes(only_active=True):
         if not home.has_active_subscription:
             continue
-        entities.append(TibberEnergyPriceSensor(home))
+        entities.append(TibberEnergyPriceSensor(runtime_data, home))
 
     async_add_entities(entities, update_before_add=True)
 
@@ -58,12 +58,14 @@ class TibberEnergyPriceSensor(SensorEntity):
     _attr_has_entity_name = True
     _attr_translation_key = "electricity_price"
 
-    def __init__(self, home: TibberHome) -> None:
+    def __init__(self, runtime_data: TibberRuntimeData, home: TibberHome) -> None:
         """Initialize the electricity price sensor.
 
         Args:
+            runtime_data: The runtime data for the Tibber integration.
             home: The Tibber home this sensor represents.
         """
+        self._runtime_data = runtime_data
         self._home = home
 
         self._attr_unique_id = f"{home.home_id}_energy_price"
@@ -79,6 +81,9 @@ class TibberEnergyPriceSensor(SensorEntity):
     async def async_update(self) -> None:
         """Zorg dat price_total up-to-date is."""
 
+        self._runtime_data.async_get_client(
+            self.hass
+        )  # dumb code to refresh access token if needed before updating price info
         await self._home.update_info_and_price_info()
 
         snapshot = build_energy_price_snapshot(self._home)
